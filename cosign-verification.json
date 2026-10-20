@@ -1,0 +1,2 @@
+
+[{"critical":{"identity":{"docker-reference":"ghcr.io/manpreet881449-arch/sample-app@sha256:2946df84c6516b588d1a5c256d6b319232a5f4af6134b8044a33f1c77ea20a06"},"image":{"docker-manifest-digest":"sha256:2946df84c6516b588d1a5c256d6b319232a5f4af6134b8044a33f1c77ea20a06"},"type":"https://sigstore.dev/cosign/sign/v1"},"optional":{}}]
