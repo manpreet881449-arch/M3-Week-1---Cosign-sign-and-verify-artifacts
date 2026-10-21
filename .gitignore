@@ -10,3 +10,4 @@ signing_config.json
 *.bak
 sbom-image.json
 opa
+sbom.json
