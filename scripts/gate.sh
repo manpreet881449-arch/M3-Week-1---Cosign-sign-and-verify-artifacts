@@ -15,11 +15,12 @@ case "$IMAGE" in
 esac
 
 # 1. Verify the signature (fail-closed: koi bhi error = unsigned)
-COSIGN_KEY="${COSIGN_KEY:-cosign.pub}"
-if cosign verify $FLAGS \
-     --key "$COSIGN_KEY" \
-     --insecure-ignore-tlog \
-     "$IMAGE" >/dev/null 2>&1; then SIGNED=true; else SIGNED=false; fi
+if [ -n "${COSIGN_KEY:-}" ]; then
+  VERIFY_ARGS=(--key "$COSIGN_KEY" --insecure-ignore-tlog)
+else
+  VERIFY_ARGS=(--certificate-identity "$COSIGN_IDENTITY" --certificate-oidc-issuer "$COSIGN_ISSUER")
+fi
+if cosign verify $FLAGS "${VERIFY_ARGS[@]}" "$IMAGE" >/dev/null 2>&1; then SIGNED=true; else SIGNED=false; fi
 
 # 2. Scan for vulnerabilities
 grype "$IMAGE" -o json > "$WORK/grype.json"
