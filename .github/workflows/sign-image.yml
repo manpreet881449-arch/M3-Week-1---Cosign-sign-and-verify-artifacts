@@ -12,8 +12,7 @@ jobs:
   sign:
     runs-on: ubuntu-latest
     env:
-      IMAGE: ghcr.io/manpreet881449-arch/sample-app
-      DIGEST: sha256:2946df84c6516b588d1a5c256d6b319232a5f4af6134b8044a33f1c77ea20a06
+      IMAGE: ghcr.io/manpreet881449-arch/sample-app-ci
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,11 +21,15 @@ jobs:
         uses: sigstore/cosign-installer@v3
 
       - name: Login to GHCR
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+
+      - name: Build and push
         run: |
-          echo "$GH_TOKEN" | docker login ghcr.io \
-            -u "${{ github.actor }}" --password-stdin
+          docker build -t "$IMAGE:v1" .
+          docker push "$IMAGE:v1"
+          DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' "$IMAGE:v1" | cut -d@ -f2)
+          echo "DIGEST=$DIGEST" >> "$GITHUB_ENV"
+          echo "Pushed digest: $DIGEST"
 
       - name: Sign image
         run: cosign sign --yes "$IMAGE@$DIGEST"
