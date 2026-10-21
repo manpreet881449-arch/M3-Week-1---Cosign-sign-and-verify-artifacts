@@ -5,3 +5,8 @@
 cosign.key
 signing_config.json
 *.bak
+cosign.key
+signing_config.json
+*.bak
+sbom-image.json
+opa
