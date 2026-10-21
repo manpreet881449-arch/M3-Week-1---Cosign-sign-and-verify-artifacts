@@ -63,3 +63,8 @@ deny contains msg if {
     not input.terraform_scan_passed
     msg := "terraform scan failed or did not run"
 }
+
+deny contains msg if {
+    not input.base_image
+    msg := "base image not provided"
+}
